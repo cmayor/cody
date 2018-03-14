@@ -103,6 +103,16 @@ RSpec.describe ReceiveIssueCommentEvent do
         expect { job.perform(payload) }.to_not change { foo_reviewer.reload.login }
       end
     end
+    
+    context "when the reviewer is specified with an @ sign" do
+      let(:comment) { "cody replace foo=@BrentW" }
+      let(:acceptable_reviewer) { "BrentW" }
+      
+      it "replaces aergonaut with BrentW" do
+        foo_reviewer = pr.reviewers.find_by(review_rule_id: rule.id)
+        expect { job.perform(payload) }.to change { foo_reviewer.reload.login }.from("aergonaut").to("BrentW")
+      end
+    end
   end
   
   describe "#comment_replace_me" do

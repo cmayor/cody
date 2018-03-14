@@ -124,7 +124,7 @@ class ReceiveIssueCommentEvent
     return false unless comment =~ /^cody\s+r(eplace)?\s+(?<directives>.*)$/
 
     directives = $LAST_MATCH_INFO[:directives]
-    return false unless directives.match?(/([A-Za-z0-9_-]+)=([A-Za-z0-9_-]+)/)
+    return false unless directives.match?(/([A-Za-z0-9_-]+)=@?([A-Za-z0-9_-]+)/)
     directives
   end
 
@@ -139,7 +139,7 @@ class ReceiveIssueCommentEvent
     )
     return false unless pr.present?
 
-    directives.scan(/([A-Za-z0-9_-]+)=([A-Za-z0-9_-]+)/).each do |code, login|
+    directives.scan(/([A-Za-z0-9_-]+)=@?([A-Za-z0-9_-]+)/).each do |code, login|
       reviewer = pr.generated_reviewers
         .joins(:review_rule)
         .find_by(review_rules: { short_code: code })
